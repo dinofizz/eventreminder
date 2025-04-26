@@ -6,9 +6,13 @@ This was made for my amusement and entertainment only, to keep practising basic 
 
 ## Build
 
-`go build`
+`go build -o eventreminder main.go`
 
 ## Usage
+
+```bash
+./eventreminder -file /path/to/events.csv
+```
 
 The application will accept a `-file` argument with a path to a CSV file, or if this is omitted it will try open a file named `events.csv` in the same folder as the application. The format of the csv file should be as follows:
 
