@@ -68,6 +68,7 @@ func sendMessages(events []CsvLine) {
 	for _, e := range events  {
 		m := fmt.Sprintf("%s - %s\n", e.Subject, e.Event)
 		message := pushover.NewMessage(m)
+		log.Print(m)
 		_, err := app.SendMessage(message, recipient)
 		if err != nil {
 			log.Panic(err)
@@ -76,6 +77,7 @@ func sendMessages(events []CsvLine) {
 }
 
 func main() {
+	log.Print("START")
 	f, err := os.Open("events.csv")
 	if err != nil {
 		log.Fatalln("Couldn't open the csv file", err)
@@ -110,8 +112,11 @@ func main() {
 		}
 	}
 
+	log.Printf("Found %d events\n", len(events))
+
 	if len(events) != 0 {
 		sendMessages(events)
 	}
+	log.Print("END")
 
 }
