@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag" // Import the flag package
 	"fmt"
 	"log"
 	"os"
@@ -12,12 +13,12 @@ import (
 )
 
 type CsvLine struct {
-	Day int
-	Month int
-	Year int
+	Day     int
+	Month   int
+	Year    int
 	Subject string
-	Event string
-	Notes string
+	Event   string
+	Notes   string
 }
 
 func extractCsvData(line []string) (c CsvLine, err error) {
@@ -40,12 +41,12 @@ func extractCsvData(line []string) (c CsvLine, err error) {
 		}
 	}
 	data := CsvLine{
-		Day: day,
-		Month: month,
-		Year: year,
+		Day:     day,
+		Month:   month,
+		Year:    year,
 		Subject: line[3],
-		Event: line[4],
-		Notes: line[5],
+		Event:   line[4],
+		Notes:   line[5],
 	}
 
 	return data, nil
@@ -65,7 +66,7 @@ func sendMessages(events []CsvLine) {
 	app := pushover.New(poToken)
 	recipient := pushover.NewRecipient(poRecipient)
 
-	for _, e := range events  {
+	for _, e := range events {
 		m := fmt.Sprintf("%s - %s\n", e.Subject, e.Event)
 		message := pushover.NewMessage(m)
 		log.Print(m)
@@ -77,10 +78,16 @@ func sendMessages(events []CsvLine) {
 }
 
 func main() {
+	// Define a string flag "file" with a default value "events.csv" and a help message.
+	csvFilename := flag.String("file", "events.csv", "Path to the events CSV file")
+	// Parse the command-line flags
+	flag.Parse()
+
 	log.Print("START")
-	f, err := os.Open("events.csv")
+	// Use the filename provided by the flag (dereference the pointer)
+	f, err := os.Open(*csvFilename)
 	if err != nil {
-		log.Fatalln("Couldn't open the csv file", err)
+		log.Fatalf("Couldn't open the csv file '%s': %v\n", *csvFilename, err)
 	}
 	defer f.Close()
 
@@ -93,6 +100,7 @@ func main() {
 
 	for i, line := range records {
 		if i == 0 {
+			// Skip header row
 			continue
 		}
 
@@ -118,5 +126,4 @@ func main() {
 		sendMessages(events)
 	}
 	log.Print("END")
-
 }
