@@ -115,7 +115,7 @@ func main() {
 		m := int(t.Month())
 
 		if csvLine.Month == m && csvLine.Day == d {
-			fmt.Println(csvLine.Subject)
+			//fmt.Println(csvLine.Subject)
 			events = append(events, csvLine)
 		}
 	}
